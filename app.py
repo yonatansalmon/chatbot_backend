@@ -1,3 +1,4 @@
+#https://sheltered-springs-30986.herokuapp.com/
 import threading
 import time
 import json
@@ -9,8 +10,9 @@ app = Flask(__name__)
 
 
 @app.route('/', methods=['GET'])
-def get_books():
-    return 'hello world'
+def hello():
+    text = request.args.get("message")
+    return jsonify(text)
 
 
 @app.after_request
