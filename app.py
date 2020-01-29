@@ -1,31 +1,46 @@
-#https://sheltered-springs-30986.herokuapp.com/
-import threading
-import time
-import json
+from flask import Flask, request, jsonify, render_template
 import os
+import random
+import requests
+import json
 
-from flask import Flask, jsonify, render_template, request, redirect
+responses = ("What?", "Not feeling to goood", "Hey hey hey", "I am a fullstack developer", "Im so drunk!", "Nice!")
 
 app = Flask(__name__)
 
+# communicating with others
+app = Flask(__name__)
+@app.route("/message/")
+def message():
+    if request.args.get('message'):
+        user_input = request.args.get('message')
+        response = requests.get("https://immense-thicket-73815.herokuapp.com/message/?message=" + user_input)
+        json_string = json.loads(response.content)
+        response_message = {json_string["message"]}
+        return str(response_message)
+    else:
+        return 'Please write "message=" in the URL ... '
 
-@app.route('/', methods=['GET'])
-def hello():
-    text = request.args.get("message")
-    return jsonify(text)
+
+# parrot
+app = Flask(__name__)
+@app.route("/message/")
+def message():
+    message = request.args.get('message')
+    return message
 
 
-@app.after_request
-def add_header(r):
-    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    r.headers["Pragma"] = "no-cache"
-    r.headers["Expires"] = "0"
-    r.headers['Cache-Control'] = 'public, max-age=0'
-    return r
+# drunk
+app = Flask(__name__)
+@app.route("/message/")
+def message():
+    if request.args.get('message'):
+        return random.choice(responses)
+    else:
+        return "message = "
 
 
 if __name__ == "__main__":
-    time.sleep(0.5)
     local = "127.0.0.1"
     heroku = "0.0.0.0"
     port = int(os.environ.get("PORT", 5000))
